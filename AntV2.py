@@ -5,7 +5,7 @@ from web3 import Web3, HTTPProvider
 import logging
 import random
 
-connection = Web3(HTTPProvider('https://mainnet.infura.io/v3/YOUR_KEY'))
+connection = Web3(HTTPProvider('https://mainnet.infura.io/v3/a54ddb59e9a94434828abdca9fea3e21'))
 
 logging.basicConfig(level=logging.INFO) #To Log Blocks
 
