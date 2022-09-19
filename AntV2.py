@@ -41,8 +41,21 @@ class Block:
 		if seed == None : seed = 0
 		self.seed = seed
 
-	#def set_number(self, number):
-	#def set_hash(self, hash_code):
+
+class Ant:
+    def __init__(self, x, y, matrix):
+
+		self.pos = numpy.array([x, y])
+		self.carrying = matrix.get_matrix()[x][y]
+		self.matrix = matrix
+
+	#def a_move(self, size, func):
+
+
+	#def o_take(self, size, func):
+
+	#def o_drop(self, size, func):
+
 
 
 def populate_matrix(matrix, size, seed, ant, dead):
@@ -78,10 +91,7 @@ def populate_matrix(matrix, size, seed, ant, dead):
 		for k in range(size):
 			if matrix[j][k]>0:
 				matrix[j][k]=0
-	return matrix
-
-
-
+	return matrix			
 
 def generate_matrix(size):
 	matrix=np.zeros((size,size))
@@ -89,9 +99,6 @@ def generate_matrix(size):
 
 def verify_pos(matrix,pos):
 	return matrix[pos]
-
-def random_object(amount_object, object_type):
-	return amount_object
 
 def main():
 
@@ -101,6 +108,7 @@ def main():
 	seed = int(str(seed)[:9])
 	new = Block()
 	choice = -1
+
 
 	size = int(input('Enter Matrix Size : '))
 	n_ants = size**2+1
@@ -122,7 +130,9 @@ def main():
 	choice = int(input ('0 - No Input / 1 - Last Block / 2 - Custom Block: '))
 
 
-	if choice == 1 : new=Block(block['number'], block['hash'].hex(), seed)
+	if choice == 1 : 
+		new=Block(block['number'], block['hash'].hex(), seed)
+		print (seed)
 	if choice == 2:
 		choice = int(input ('Type Block Number: '))
 		block = connection.eth.get_block(choice)
@@ -130,30 +140,25 @@ def main():
 		seed = int(str(seed)[:9])
 		new = Block(block['number'], block['hash'].hex(), seed)
 
-	print (seed)
+	
 	matrix = populate_matrix(matrix, size_orig, seed, n_ants, n_dead)
+
+
+	n_iteractions = int(input('Type Number of Iteractions: '))
+
+	mov_ants(matrix, size_orig, n_ants)
 
 
 
 	print(np.matrix(matrix))
 
 
-	#if n_ants < size * 2:
-	#	out = 1
-
-	#while (out==0)
-
-	#	print ('Too Much Ants, Try a lower Amount')
-
-
-
-	#n_dead =
-
-	#Gerar 
-
 if __name__ == '__main__':
     main()
 
+
+#NOTES
+#INSTANCIAR FORMIGAS e METER MATRIX TOGETHER
 
 '''
 Montar Sistema para Simular Agrupamento de Itens:
@@ -174,7 +179,12 @@ Verificar se Campo não esta ocupado
 
 Botar Objetos na Matriz (Estados)
 
-Verificar se Campo não esta ocupado'''
+Verificar se Campo não esta ocupado
+
+Critério de Parada
+
+'''
+
 
 
 
