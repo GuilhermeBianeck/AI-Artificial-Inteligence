@@ -47,7 +47,7 @@ class Ant:
 		self.carrying = matrix.get_matrix()[x][y]
 		self.matrix = matrix
 
-	#def a_move(self, size, cons):
+	def a_move(self, size, cons):
 		step_size = random.randint(1, 9)
 		# Adicionar algum vector (-1,+1) * step_size à localização das formigas
 		self.pos += nrand.randint(-1 * step_size, 1 * step_size, 2)
@@ -83,7 +83,7 @@ class Ant:
 		ant = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
 		return 1 - self.matrix.get_probability(ant, self.pos[0], self.pos[1], size, cons)
 
-	#def o_drop(self, size, cons):
+	def o_drop(self, size, cons):
 		ant = self.carrying
 		return self.matrix.get_probability(ant, self.pos[0], self.pos[1], size, cons)
 
