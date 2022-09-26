@@ -1,8 +1,11 @@
+from turtle import width
 import numpy as np
+import numpy.random as nrand
 import math 
 from web3 import Web3, HTTPProvider
 import logging
 import random
+import matplotlib.pylab as plt
 
 connection = Web3(HTTPProvider('https://mainnet.infura.io/v3/a54ddb59e9a94434828abdca9fea3e21'))
 
@@ -43,7 +46,7 @@ class Block:
 
 class Ant:
 	def __init__(self, x, y, matrix):
-		self.pos = numpy.array([x, y])
+		self.pos = np.array([x, y])
 		self.carrying = matrix.get_matrix()[x][y]
 		self.matrix = matrix
 
@@ -52,7 +55,7 @@ class Ant:
 		# Adicionar algum vector (-1,+1) * step_size à localização das formigas
 		self.pos += nrand.randint(-1 * step_size, 1 * step_size, 2)
 		# Modificar a nova localização pelo tamanho da matriz para evitar o overflow
-		self.pos = numpy.mod(self.pos, self.matrix.size)
+		self.pos = np.mod(self.pos, self.matrix.size)
 		# Obter o objeto nesse local na matriz
 		o = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
 		# Se a celula estiver ocupada, mova-se novamente 
@@ -74,7 +77,7 @@ class Ant:
 		else:
 			if self.carrying is not None:
 				# Verificar se a formiga solta o objeto
-				if o_drop(size, cons) >= random.random:
+				if self.o_drop(size, cons) >= random.random:
 					# Solte o objeto no local vazio
 					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = self.carrying
 					self.carrying = None
@@ -88,100 +91,119 @@ class Ant:
 		return self.matrix.get_probability(ant, self.pos[0], self.pos[1], size, cons)
 
 
+class Matrix:
+	def __init__(self, height, width , file):
+		self.path = file
+		self.dim = np.array([height, width])
+		self.matrix = np.zeros(height,width)
 
-def populate_matrix(matrix, size, seed, ant, dead):
-	aux = True
-	aux2 = 0
-	np.random.seed(seed)
-	matrix = np.random.randint(low = 0, high = size**2, size = (size,size))
-	while ant > 0:
-		#print('ANT',ant)
-		for j in range(size):
-			for k in range(size):
-			#print(j,'IN RANGE',size)
-				if matrix[j][k]==aux2:
-					if ant > 0:
-						matrix[j][k]= -1
-						ant -= 1
-		aux2+= 1
+		plt.ion() #Plot Matrix
+		plt.figure(figsize=(10, 10))		
+
+	def populate_matrix(self, height, width, seed, ant, dead):
+		aux = True
+		aux2 = 0
+		np.random.seed(seed)
+		matrix = np.random.randint(low = 0, high = height*width, size = (height,width))
+		while ant > 0:
+			for j in range(height):
+				for k in range(width):
+					if self.matrix[j][k]==aux2:
+						if ant > 0:
+							self.matrix[j][k]= -1
+							ant -= 1
+			aux2+= 1
+			j=0
+		aux2 = height*width
+		while dead > 0:
+			#print('DED',dead)
+			for j in range(height):
+				for k in range(width):
+				#print(j,'IN RANGE',size)
+					if self.matrix[j][k]==aux2:
+						if dead > 0:
+							self.matrix[j][k] = -2
+							dead -= 1
+
+			aux2-= 1
 		j=0
-	aux2 = size**2
-	while dead > 0:
-		#print('DED',dead)
-		for j in range(size):
-			for k in range(size):
-			#print(j,'IN RANGE',size)
-				if matrix[j][k]==aux2:
-					if dead > 0:
-						matrix[j][k] = -2
-						dead -= 1
-
-		aux2-= 1
-	j=0
-	for j in range(size):
-		for k in range(size):
-			if matrix[j][k]>0:
-				matrix[j][k]=0
-	return matrix			
-
-def generate_matrix(size):
-	matrix=np.zeros((size,size))
-	return matrix
-
-def verify_pos(matrix,pos):
-	return matrix[pos]
-
+		for j in range(height):
+			for k in range(width):
+				if self.matrix[j][k]>0:
+					self.matrix[j][k]=0
+		return self.matrix
+		
+	def plot_matrix(self, name="", save_figure=True):
+		plt.matshow(self.matrix_grid(), cmap="RdBu", fignum=0)
+		if save_figure:
+			plt.savefig(self.path + name + '.png')
+        # plt.draw()
+	
+	def get_matrix(self):		
+		return self.matrix
+		
+def runs(height, width, ant, dead, number, constant, file = "image"):
+	pass
+	
 def main():
 
 	out = 0
-	block = connection.eth.get_block('latest')
-	seed = int(block['hash'].hex(),16)
-	seed = int(str(seed)[:9])
-	new = Block()
-	choice = -1
+	choice = 0 #-1 
 
 
-	size = int(input('Enter Matrix Size : '))
-	n_ants = size**2+1
-	n_dead = size**2+1
-	matrix = generate_matrix(size)
-	size_orig = size
-	size = size**2
+	#height = int(input('Enter Matrix height : '))
+	height = 20
+	#width = int(input('Enter Matrix width : '))
+	width = 20
 
-	while n_ants > size:
-		n_ants = int(input('Number of Ants: '))
-		if n_ants > size:
+	n_ants = (height*width)+1
+	n_dead = (height*width)+1
+	#matrix = generate_matrix(size)
+	max_size = height*width
+
+	while n_ants > max_size:
+		#n_ants = int(input('Number of Ants: '))
+		n_ants = 20
+		if n_ants > max_size:
 			print ('Type a lower Value - ')
 
-	while n_dead > size:
+	while n_dead > max_size-n_ants:
 		n_dead = int(input('Number of Bodies: ')) 
-		if n_dead > size:
+		n_dead = 20
+		if n_dead > max_size-n_ants:
 			print ('Type a Lower Value - ')
 
 	choice = int(input ('0 - No Input / 1 - Last Block / 2 - Custom Block: '))
 
 
 	if choice == 1 : 
-		new=Block(block['number'], block['hash'].hex(), seed)
+		block = connection.eth.get_block('latest')
+		seed = int(block['hash'].hex(),16)
+		seed = int(str(seed)[:9])
+
+		new = Block(block['number'], block['hash'].hex(), seed)
 		print (seed)
+
 	if choice == 2:
 		choice = int(input ('Type Block Number: '))
 		block = connection.eth.get_block(choice)
 		seed = int(block['hash'].hex(),16)
 		seed = int(str(seed)[:9])
+
 		new = Block(block['number'], block['hash'].hex(), seed)
 
+
+	matrix = new.Matrix(height, width , "image")
+
 	
-	matrix = populate_matrix(matrix, size_orig, seed, n_ants, n_dead)
+	#matrix = populate_matrix(matrix, size_orig, seed, n_ants, n_dead)
+
+	#n_iteractions = int(input('Type Number of Iteractions: '))
+
+	#a_move(matrix, size_orig, n_ants)
 
 
-	n_iteractions = int(input('Type Number of Iteractions: '))
-
-	mov_ants(matrix, size_orig, n_ants)
-
-
-
-	print(np.matrix(matrix))
+	#5print(np.matrix(new.matrix))
 
 
 if __name__ == '__main__':
