@@ -43,8 +43,7 @@ class Block:
 
 
 class Ant:
-    def __init__(self, x, y, matrix):
-
+	def __init__(self, x, y, matrix):
 		self.pos = numpy.array([x, y])
 		self.carrying = matrix.get_matrix()[x][y]
 		self.matrix = matrix
