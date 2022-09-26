@@ -48,12 +48,45 @@ class Ant:
 		self.carrying = matrix.get_matrix()[x][y]
 		self.matrix = matrix
 
-	#def a_move(self, size, func):
+	def a_move(self, size, cons):
+		step_size = random.randint(1, 9)
+		# Adicionar algum vector (-1,+1) * step_size à localização das formigas
+		self.pos += nrand.randint(-1 * step_size, 1 * step_size, 2)
+		# Modificar a nova localização pelo tamanho da matriz para evitar o overflow
+		self.pos = numpy.mod(self.pos, self.matrix.size)
+		# Obter o objeto nesse local na matriz
+		o = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
+		# Se a celula estiver ocupada, mova-se novamente 
+		if o is not None:
+			# Se a formiga não estiver carregando um objeto
+			if self.carrying is None:
+				# Verificar se a formiga pega o objeto
+				if self.o_take(size, cons) >= random.random():
+					# Pegar o objeto e remover da matriz
+					self.carrying = o
+					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = None
+					# Se não se mover
+				else:
+					self.a_move(size, cons)
+			# Se carregando um objeto, basta mover-se
+			else: 
+				self.a_move(size, cons)		
+		#Se a celula estiver vazia	
+		else:
+			if self.carrying is not None:
+				# Verificar se a formiga solta o objeto
+				if o_drop(size, cons) >= random.random:
+					# Solte o objeto no local vazio
+					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = self.carrying
+					self.carrying = None
 
+	def o_take(self, size, cons):
+		ant = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
+		return 1 - self.matrix.get_probability(ant, self.pos[0], self.pos[1], size, cons)
 
-	#def o_take(self, size, func):
-
-	#def o_drop(self, size, func):
+	def o_drop(self, size, cons):
+		ant = self.carrying
+		return self.matrix.get_probability(ant, self.pos[0], self.pos[1], size, cons)
 
 
 
