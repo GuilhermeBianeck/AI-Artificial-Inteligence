@@ -1,7 +1,7 @@
 from turtle import width
 import numpy as np
 import numpy.random as nrand
-import math 
+import math
 from web3 import Web3, HTTPProvider
 import logging
 import random
@@ -34,7 +34,7 @@ class Block:
 
 	def __init__(self, number=None, hash_code=None, seed=None):
 
-		if number == None : number = 0	
+		if number == None : number = 0
 		self.number = number
 
 		if hash_code == None : hash_code = 0
@@ -58,7 +58,7 @@ class Ant:
 		self.pos = np.mod(self.pos, self.matrix.size)
 		# Obter o objeto nesse local na matriz
 		o = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
-		# Se a celula estiver ocupada, mova-se novamente 
+		# Se a celula estiver ocupada, mova-se novamente
 		if o is not None:
 			# Se a formiga não estiver carregando um objeto
 			if self.carrying is None:
@@ -71,9 +71,9 @@ class Ant:
 				else:
 					self.a_move(size, cons)
 			# Se carregando um objeto, basta mover-se
-			else: 
-				self.a_move(size, cons)		
-		#Se a celula estiver vazia	
+			else:
+				self.a_move(size, cons)
+		#Se a celula estiver vazia
 		else:
 			if self.carrying is not None:
 				# Verificar se a formiga solta o objeto
@@ -98,7 +98,7 @@ class Matrix:
 		self.matrix = np.zeros(height,width)
 
 		plt.ion() #Plot Matrix
-		plt.figure(figsize=(10, 10))		
+		plt.figure(figsize=(10, 10))
 
 	def populate_matrix(self, height, width, seed, ant, dead):
 		aux = True
@@ -132,23 +132,23 @@ class Matrix:
 				if self.matrix[j][k]>0:
 					self.matrix[j][k]=0
 		return self.matrix
-		
+
 	def plot_matrix(self, name="", save_figure=True):
 		plt.matshow(self.matrix_grid(), cmap="RdBu", fignum=0)
 		if save_figure:
 			plt.savefig(self.path + name + '.png')
         # plt.draw()
-	
-	def get_matrix(self):		
+
+	def get_matrix(self):
 		return self.matrix
-		
+
 def runs(height, width, ant, dead, number, constant, file = "image"):
 	pass
-	
+
 def main():
 
 	out = 0
-	choice = 0 #-1 
+	choice = 0 #-1
 
 
 	#height = int(input('Enter Matrix height : '))
@@ -168,7 +168,7 @@ def main():
 			print ('Type a lower Value - ')
 
 	while n_dead > max_size-n_ants:
-		n_dead = int(input('Number of Bodies: ')) 
+		n_dead = int(input('Number of Bodies: '))
 		n_dead = 20
 		if n_dead > max_size-n_ants:
 			print ('Type a Lower Value - ')
@@ -176,7 +176,7 @@ def main():
 	choice = int(input ('0 - No Input / 1 - Last Block / 2 - Custom Block: '))
 
 
-	if choice == 1 : 
+	if choice == 1 :
 		block = connection.eth.get_block('latest')
 		seed = int(block['hash'].hex(),16)
 		seed = int(str(seed)[:9])
@@ -195,7 +195,7 @@ def main():
 
 	matrix = new.Matrix(height, width , "image")
 
-	
+
 	#matrix = populate_matrix(matrix, size_orig, seed, n_ants, n_dead)
 
 	#n_iteractions = int(input('Type Number of Iteractions: '))
@@ -216,7 +216,7 @@ if __name__ == '__main__':
 '''
 Montar Sistema para Simular Agrupamento de Itens:
 Definir uma Matriz (Tamanho)
-Definir Quantidade de Formigas 
+Definir Quantidade de Formigas
 Verificar se é inferior ao tamanho da matriz
 Definir Quantidade de Objetos
 Verificar se é inferior ao Tamanho da matriz - Quantidade de Formigas
