@@ -95,7 +95,8 @@ class Matrix:
 	def __init__(self, height, width , file):
 		self.path = file
 		self.dim = np.array([height, width])
-		self.matrix = np.zeros(height,width)
+		self.matrix = np.zeros([height,width])
+		print (self.matrix)
 
 		plt.ion() #Plot Matrix
 		plt.figure(figsize=(10, 10))		
@@ -168,13 +169,14 @@ def main():
 			print ('Type a lower Value - ')
 
 	while n_dead > max_size-n_ants:
-		n_dead = int(input('Number of Bodies: ')) 
+		#n_dead = int(input('Number of Bodies: ')) 
 		n_dead = 20
 		if n_dead > max_size-n_ants:
 			print ('Type a Lower Value - ')
 
-	choice = int(input ('0 - No Input / 1 - Last Block / 2 - Custom Block: '))
+	#choice = int(input ('0 - No Input / 1 - Last Block / 2 - Custom Block: '))
 
+	matrix = Matrix(height, width , "image")
 
 	if choice == 1 : 
 		block = connection.eth.get_block('latest')
@@ -193,7 +195,7 @@ def main():
 		new = Block(block['number'], block['hash'].hex(), seed)
 
 
-	matrix = new.Matrix(height, width , "image")
+	#matrix = Matrix(height, width , "image")
 
 	
 	#matrix = populate_matrix(matrix, size_orig, seed, n_ants, n_dead)
