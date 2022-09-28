@@ -11,8 +11,9 @@ from pprint import pprint
 
 connection = Web3(HTTPProvider('https://mainnet.infura.io/v3/a54ddb59e9a94434828abdca9fea3e21'))
 
-view = 1
+view = 5
 freq = 500
+cons = 5
 
 
 
@@ -192,13 +193,13 @@ class Data:
         """
         self.data = data
 
-    def similarity(self, Data):
+    def similarity(self, matrix):
         """
         Returns the sum-squared distance between this Data and some other Data
         :param Data: the other Data
         :return: sum squared distance
         """
-        diff = np.abs(self.data - Matrix.data)
+        diff = np.abs(self.data - matrix.data)
         return np.sum(diff**2)
 
 		
@@ -260,7 +261,7 @@ def main():
 	#matrix.plot_matrix("file")
 	for i in range(n_dead):
 		for ant in ants_agents:
-			ant.a_move(view, view)
+			ant.a_move(view, cons)
 		if i % freq == 0:
 			print(i)
 			s = "img" + str(i).zfill(6)
