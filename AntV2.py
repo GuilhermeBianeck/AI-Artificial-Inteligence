@@ -58,7 +58,7 @@ class Ant:
 		self.matrix = matrix
 
 	def a_move(self, view, cons):
-		step_size = random.randint(1, 9)
+		step_size = random.randint(1, 25)
 		# Adicionar algum vector (-1,+1) * step_size à localização das formigas
 		self.pos += nrand.randint(-1 * step_size, 1 * step_size, 2)
 		# Modificar a nova localização pelo tamanho da matriz para evitar o overflow
@@ -91,11 +91,11 @@ class Ant:
 
 	def o_take(self, view, cons):
 		ant = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
-		return 1 - self.matrix.get_probability(ant, self.pos[0], self.pos[1], view, cons)
+		return 1 - self.matrix.get_chances(ant, self.pos[0], self.pos[1], view, cons)
 
 	def o_drop(self, view, cons):
 		ant = self.carrying
-		return self.matrix.get_probability(ant, self.pos[0], self.pos[1], view, cons)
+		return self.matrix.get_chances(ant, self.pos[0], self.pos[1], view, cons)
 
 
 class Matrix:
@@ -158,29 +158,48 @@ class Matrix:
 		return self.matrix
 
 	def get_chances(self, d, y , x, view, cons):
-		y_s = y-n
-		x_s = x-n
+		y_s = y - view
+		x_s = x - view
 		total = 0.0
 		# for i in range( vizinhos
-		for i in range((n*2)+1):
+		for i in range((view*2)+1):
+			xi = (x_s + i) % self.dim[0]
+			for j in range((view*2)+1):
 			## Se estamos olhando para um vizinho
-			if j != x and i != y:
-				yj = (y_s+j)% self.dim[1]
-				#pega o vizinho o
-				o = self.matrix[xi][yj]
-				# verifica a similaridade entre x e o 
-				if o is not None:
-					s = d.similarity(o)
-					total += s
+				if j != x and i != y:
+					yj = (y_s + j) % self.dim[1]
+					#pega o vizinho o
+					o = self.matrix[xi][yj]
+					# verifica a similaridade entre x e o 
+					if o is not None:
+						s = d.similarity(o)
+						total += s
 		#normaliza a densidade parapara a visão maxima dos dados 
-		md= total/(math.pow((n*2)+1, 2)-1)
+		md= total/(math.pow((view*2)+1, 2)-1)
 		if md > self.max_d:
 			self.max_d = md
-		density = total / (self.max_d*(math.pow((n*2)+1,2)-1))
+		density = total / (self.max_d*(math.pow((view*2)+1,2)-1))
 		density = max(min(density, 1), 0 )
-		t = math.exp(-c*density)
+		t = math.exp(-cons * density)
 		probability = (1-t)/ (1+t)
 		return probability
+
+class Data:
+    def __init__(self, data):
+        """
+        A Data object is basically just a ND vector
+        :param data: the ND vector
+        """
+        self.data = data
+
+    def similarity(self, Data):
+        """
+        Returns the sum-squared distance between this Data and some other Data
+        :param Data: the other Data
+        :return: sum squared distance
+        """
+        diff = np.abs(self.data - Matrix.data)
+        return np.sum(diff**2)
 
 		
 def runs(height, width, ant, dead, number, constant, file = "image"):
