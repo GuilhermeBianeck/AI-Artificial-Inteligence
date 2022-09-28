@@ -51,12 +51,12 @@ class Ant:
 		self.carrying = matrix.get_matrix()[x][y]
 		self.matrix = matrix
 
-	def a_move(self, size, cons):
+	def a_move(self, view, cons):
 		step_size = random.randint(1, 9)
 		# Adicionar algum vector (-1,+1) * step_size à localização das formigas
 		self.pos += nrand.randint(-1 * step_size, 1 * step_size, 2)
 		# Modificar a nova localização pelo tamanho da matriz para evitar o overflow
-		self.pos = np.mod(self.pos, self.matrix.size)
+		self.pos = np.mod(self.pos, self.matrix.dim)
 		# Obter o objeto nesse local na matriz
 		o = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
 		# Se a celula estiver ocupada, mova-se novamente 
@@ -64,32 +64,32 @@ class Ant:
 			# Se a formiga não estiver carregando um objeto
 			if self.carrying is None:
 				# Verificar se a formiga pega o objeto
-				if self.o_take(size, cons) >= random.random():
+				if self.o_take(view, cons) >= random.random():
 					# Pegar o objeto e remover da matriz
 					self.carrying = o
 					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = None
 					# Se não se mover
 				else:
-					self.a_move(size, cons)
+					self.a_move(view, cons)
 			# Se carregando um objeto, basta mover-se
 			else: 
-				self.a_move(size, cons)		
+				self.a_move(view, cons)		
 		#Se a celula estiver vazia	
 		else:
 			if self.carrying is not None:
 				# Verificar se a formiga solta o objeto
-				if self.o_drop(size, cons) >= random.random:
+				if self.o_drop(view, cons) >= random.random:
 					# Solte o objeto no local vazio
 					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = self.carrying
 					self.carrying = None
 
-	def o_take(self, size, cons):
+	def o_take(self, view, cons):
 		ant = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
-		return 1 - self.matrix.get_probability(ant, self.pos[0], self.pos[1], size, cons)
+		return 1 - self.matrix.get_probability(ant, self.pos[0], self.pos[1], view, cons)
 
-	def o_drop(self, size, cons):
+	def o_drop(self, view, cons):
 		ant = self.carrying
-		return self.matrix.get_probability(ant, self.pos[0], self.pos[1], size, cons)
+		return self.matrix.get_probability(ant, self.pos[0], self.pos[1], view, cons)
 
 
 class Matrix:
@@ -207,8 +207,13 @@ def main():
 	ants_agents=[]
 	matrix.populate_matrix(height, width, seed, n_ants, n_dead, ants_agents)
 	#matrix.plot_matrix("file")
-	
-
+	for i in range(n_dead):
+		for ant in ants_agents:
+			ant.a_move(view, c)
+		if i % freq == 0:
+			print(i)
+			s = "img" + str(i).zfill(6)
+			matrix.plot_matrix(s)
 
 
 	#matrix = Matrix(height, width , "image")
