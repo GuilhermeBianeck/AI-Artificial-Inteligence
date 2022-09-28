@@ -1,3 +1,4 @@
+from re import S
 from turtle import width
 import numpy as np
 import numpy.random as nrand
@@ -155,6 +156,32 @@ class Matrix:
 	
 	def get_matrix(self):		
 		return self.matrix
+
+	def get_chances(self, d, y , x, view, cons):
+		y_s = y-n
+		x_s = x-n
+		total = 0.0
+		# for i in range( vizinhos
+		for i in range((n*2)+1):
+			## Se estamos olhando para um vizinho
+			if j != x and i != y:
+				yj = (y_s+j)% self.dim[1]
+				#pega o vizinho o
+				o = self.matrix[xi][yj]
+				# verifica a similaridade entre x e o 
+				if o is not None:
+					s = d.similarity(o)
+					total += s
+		#normaliza a densidade parapara a visão maxima dos dados 
+		md= total/(math.pow((n*2)+1, 2)-1)
+		if md > self.max_d:
+			self.max_d = md
+		density = total / (self.max_d*(math.pow((n*2)+1,2)-1))
+		density = max(min(density, 1), 0 )
+		t = math.exp(-c*density)
+		probability = (1-t)/ (1+t)
+		return probability
+
 		
 def runs(height, width, ant, dead, number, constant, file = "image"):
 	pass
