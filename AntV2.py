@@ -143,7 +143,7 @@ class Matrix:
 		return self.matrix
 		
 	def plot_matrix(self, name="", save_figure=True):
-		plt.matshow(self.matrix_grid(), cmap="RdBu", fignum=0)
+		plt.matshow(self.matrix, cmap="RdBu", fignum=0)
 		if save_figure:
 			plt.savefig(self.path + name + '.png')
         # plt.draw()
@@ -206,7 +206,8 @@ def main():
 	
 	ants_agents=[]
 	matrix.populate_matrix(height, width, seed, n_ants, n_dead, ants_agents)
-
+	#matrix.plot_matrix("file")
+	
 
 
 
