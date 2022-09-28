@@ -153,10 +153,10 @@ class Matrix:
 		return self.matrix
 		
 	def plot_matrix(self, name="", save_figure=True):
-		plt.matshow(self.matrix, cmap="RdBu", fignum=0)
+		plt.matshow(self.matrix, cmap="YlOrBr", fignum=0)
 		if save_figure:
 			plt.savefig(self.path + name + '.png')
-        # plt.draw()
+		plt.draw()
 	
 	def get_matrix(self):		
 		return self.matrix
@@ -191,28 +191,6 @@ class Matrix:
 		probability = (1-t)/ (1+t)
 		return probability
 
-class Data:
-    def __init__(self, data):
-        """
-        A Data object is basically just a ND vector
-        :param data: the ND vector
-        """
-        self.data = data
-
-    def similarity(self, matrix):
-        """
-        Returns the sum-squared distance between this Data and some other Data
-        :param Data: the other Data
-        :return: sum squared distance
-        """
-        diff = np.abs(self.data - matrix.data)
-        print (np.sum(diff**2))
-        return np.sum(diff**2)
-
-		
-def runs(height, width, ant, dead, number, constant, file = "image"):
-	pass
-	
 def main():
 
 	out = 0
