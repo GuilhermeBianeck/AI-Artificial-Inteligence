@@ -66,15 +66,16 @@ class Ant:
 		self.pos = np.mod(self.pos, self.matrix.dim)
 		# Obter o objeto nesse local na matriz
 		o = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
+		print (o)
 		# Se a celula estiver ocupada, mova-se novamente 
-		if o is not None:
+		if o != -1:
 			# Se a formiga não estiver carregando um objeto
 			if self.carrying is None:
 				# Verificar se a formiga pega o objeto
 				if self.o_take(view, cons) >= random.random():
 					# Pegar o objeto e remover da matriz
 					self.carrying = o
-					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = None
+					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = 0
 					# Se não se mover
 				else:
 					self.a_move(view, cons)
@@ -92,10 +93,12 @@ class Ant:
 
 	def o_take(self, view, cons):
 		ant = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
+		print ("Take Ant ", ant)
 		return 1 - self.matrix.get_chances(ant, self.pos[0], self.pos[1], view, cons)
 
 	def o_drop(self, view, cons):
 		ant = self.carrying
+		print ("Carrying Ant ", ant)
 		return self.matrix.get_chances(ant, self.pos[0], self.pos[1], view, cons)
 
 
@@ -170,9 +173,12 @@ class Matrix:
 				if j != x and i != y:
 					yj = (y_s + j) % self.dim[1]
 					#pega o vizinho o
+					print("Matrix = ",self.matrix)
 					o = self.matrix[xi][yj]
+					print ("o = ",o)
 					# verifica a similaridade entre x e o 
-					if o is not None:
+					if o != 0:
+						#print (o)
 						s = d.similarity(o)
 						total += s
 		#normaliza a densidade parapara a visão maxima dos dados 
@@ -200,6 +206,7 @@ class Data:
         :return: sum squared distance
         """
         diff = np.abs(self.data - matrix.data)
+        print (np.sum(diff**2))
         return np.sum(diff**2)
 
 		
