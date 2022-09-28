@@ -10,7 +10,12 @@ from pprint import pprint
 
 connection = Web3(HTTPProvider('https://mainnet.infura.io/v3/a54ddb59e9a94434828abdca9fea3e21'))
 
-logging.basicConfig(level=logging.INFO) #To Log Blocks
+view = 1
+freq = 500
+
+
+
+logging.basicConfig(level=logging.INFO) #To Log Block
 
 
 class LoggedAccess:
@@ -209,11 +214,12 @@ def main():
 	#matrix.plot_matrix("file")
 	for i in range(n_dead):
 		for ant in ants_agents:
-			ant.a_move(view, c)
+			ant.a_move(view, view)
 		if i % freq == 0:
 			print(i)
 			s = "img" + str(i).zfill(6)
 			matrix.plot_matrix(s)
+
 
 
 	#matrix = Matrix(height, width , "image")
