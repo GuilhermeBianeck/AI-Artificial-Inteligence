@@ -6,6 +6,7 @@ from web3 import Web3, HTTPProvider
 import logging
 import random
 import matplotlib.pylab as plt
+from pprint import pprint
 
 connection = Web3(HTTPProvider('https://mainnet.infura.io/v3/a54ddb59e9a94434828abdca9fea3e21'))
 
@@ -96,26 +97,31 @@ class Matrix:
 		self.path = file
 		self.dim = np.array([height, width])
 		self.matrix = np.zeros([height,width])
-		print (self.matrix)
+		#print (self.matrix)
 
 		plt.ion() #Plot Matrix
-		plt.figure(figsize=(10, 10))		
+		plt.figure(figsize=(20, 20))		
 
-	def populate_matrix(self, height, width, seed, ant, dead):
+	def populate_matrix(self, height, width, seed, ant, dead, ants_agents):
 		aux = True
 		aux2 = 0
 		np.random.seed(seed)
-		matrix = np.random.randint(low = 0, high = height*width, size = (height,width))
+		self.matrix = np.random.randint(low = 0, high = height*width, size = (height,width))
 		while ant > 0:
 			for j in range(height):
 				for k in range(width):
 					if self.matrix[j][k]==aux2:
 						if ant > 0:
 							self.matrix[j][k]= -1
+							#print(self.matrix)
+							ants = Ant(j,k, self)
+							ants_agents.append(ants)
+
 							ant -= 1
-			aux2+= 1
+				aux2+= 1
 			j=0
 		aux2 = height*width
+		
 		while dead > 0:
 			#print('DED',dead)
 			for j in range(height):
@@ -126,12 +132,14 @@ class Matrix:
 							self.matrix[j][k] = -2
 							dead -= 1
 
-			aux2-= 1
+				aux2-= 1
+		pprint(ants_agents)
 		j=0
 		for j in range(height):
 			for k in range(width):
 				if self.matrix[j][k]>0:
 					self.matrix[j][k]=0
+		print (self.matrix)
 		return self.matrix
 		
 	def plot_matrix(self, name="", save_figure=True):
@@ -150,7 +158,7 @@ def main():
 
 	out = 0
 	choice = 0 #-1 
-
+	seed=0
 
 	#height = int(input('Enter Matrix height : '))
 	height = 20
@@ -177,6 +185,7 @@ def main():
 	#choice = int(input ('0 - No Input / 1 - Last Block / 2 - Custom Block: '))
 
 	matrix = Matrix(height, width , "image")
+	#print (matrix.matrix)
 
 	if choice == 1 : 
 		block = connection.eth.get_block('latest')
@@ -193,6 +202,12 @@ def main():
 		seed = int(str(seed)[:9])
 
 		new = Block(block['number'], block['hash'].hex(), seed)
+
+	
+	ants_agents=[]
+	matrix.populate_matrix(height, width, seed, n_ants, n_dead, ants_agents)
+
+
 
 
 	#matrix = Matrix(height, width , "image")
