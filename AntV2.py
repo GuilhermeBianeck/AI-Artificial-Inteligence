@@ -86,7 +86,7 @@ class Ant:
 		else:
 			if self.carrying is not None:
 				# Verificar se a formiga solta o objeto
-				if self.o_drop(view, cons) >= random.random:
+				if self.o_drop(view, cons) >= random.random():
 					# Solte o objeto no local vazio
 					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = self.carrying
 					self.carrying = None
@@ -104,6 +104,7 @@ class Ant:
 
 class Matrix:
 	def __init__(self, height, width , file):
+		self.max_d = 0.001
 		self.path = file
 		self.dim = np.array([height, width])
 		self.matrix = np.zeros([height,width])
@@ -175,13 +176,14 @@ class Matrix:
 					#pega o vizinho o
 					print("Matrix = ",self.matrix)
 					o = self.matrix[xi][yj]
-					print ("o = ",o)
+					
 					# verifica a similaridade entre x e o 
 					if o != 0:
+						print ("o = ",o)
 						#print (o)
-						s = d.similarity(o)
+						s = 1
 						total += s
-		#normaliza a densidade parapara a visão maxima dos dados 
+		#normaliza a densidade para a visão maxima dos dados 
 		md= total/(math.pow((view*2)+1, 2)-1)
 		if md > self.max_d:
 			self.max_d = md
@@ -209,13 +211,13 @@ def main():
 
 	while n_ants > max_size:
 		#n_ants = int(input('Number of Ants: '))
-		n_ants = 20
+		n_ants = 100
 		if n_ants > max_size:
 			print ('Type a lower Value - ')
 
 	while n_dead > max_size-n_ants:
 		#n_dead = int(input('Number of Bodies: ')) 
-		n_dead = 20
+		n_dead = 100
 		if n_dead > max_size-n_ants:
 			print ('Type a Lower Value - ')
 
@@ -239,7 +241,7 @@ def main():
 		seed = int(str(seed)[:9])
 
 		new = Block(block['number'], block['hash'].hex(), seed)
-
+	
 	
 	ants_agents=[]
 	matrix.populate_matrix(height, width, seed, n_ants, n_dead, ants_agents)
@@ -249,7 +251,7 @@ def main():
 			ant.a_move(view, cons)
 		if i % freq == 0:
 			print(i)
-			s = "img" + str(i).zfill(6)
+			s = "img" + str(i).zfill(5)
 			matrix.plot_matrix(s)
 
 
