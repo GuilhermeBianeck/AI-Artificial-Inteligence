@@ -202,8 +202,8 @@ class Matrix:
 		density = total / (self.max_d*(math.pow((view*2)+1,2)-1))
 		density = max(min(density, 1), 0 )
 		t = math.exp(-cons * density)
-		probability = (1-t)/ (1+t)
-		return probability
+		chance = (1-t)/ (1+t)
+		return chance
 
 def main():
 
