@@ -35,6 +35,18 @@ class LoggedAccess:
         logging.info('Updating %r to %r', self.public_name, value)
         setattr(obj, self.private_name, value)
 
+class Data:
+    def __init__(self, data):
+        self.data = data
+
+    def similarity(self, data):
+
+        diff = numpy.abs(self.data - data.data)
+        return numpy.sum(diff**2)
+
+    def translate(self):
+        return numpy.mean(self.data)
+
 
 class Block:
 	number = LoggedAccess()
@@ -68,14 +80,14 @@ class Ant:
 		o = self.matrix.get_matrix()[self.pos[0]][self.pos[1]]
 		print (o)
 		# Se a celula estiver ocupada, mova-se novamente 
-		if o != -1:
+		if o != None:
 			# Se a formiga não estiver carregando um objeto
 			if self.carrying is None:
 				# Verificar se a formiga pega o objeto
 				if self.o_take(view, cons) >= random.random():
 					# Pegar o objeto e remover da matriz
 					self.carrying = o
-					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = 0
+					self.matrix.get_matrix()[self.pos[0]][self.pos[1]] = None
 					# Se não se mover
 				else:
 					self.a_move(view, cons)
@@ -124,7 +136,7 @@ class Matrix:
 					if self.matrix[j][k]==aux2:
 						if ant > 0:
 							self.matrix[j][k]= -1
-							#print(self.matrix)
+							print(self.matrix)
 							ants = Ant(j,k, self)
 							ants_agents.append(ants)
 
